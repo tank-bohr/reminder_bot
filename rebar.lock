@@ -1,7 +1,11 @@
 {"1.1.0",
 [{<<"goldrush">>,{pkg,<<"goldrush">>,<<"0.1.9">>},1},
  {<<"jsx">>,{pkg,<<"jsx">>,<<"2.9.0">>},0},
- {<<"lager">>,{pkg,<<"lager">>,<<"3.6.1">>},0}]}.
+ {<<"lager">>,{pkg,<<"lager">>,<<"3.6.1">>},0},
+ {<<"legendary_goggles">>,
+  {git,"https://github.com/tank-bohr/legendary_goggles.git",
+       {ref,"7b35b2cec435282d16892bd257a69ca9fba23012"}},
+  0}]}.
 [
 {pkg_hash,[
  {<<"goldrush">>, <<"F06E5D5F1277DA5C413E84D5A2924174182FB108DABB39D5EC548B27424CD106">>},
