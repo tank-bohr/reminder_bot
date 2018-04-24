@@ -1,6 +1,7 @@
-.PHONY: all compile test run
+.PHONY: all compile test run lint
 
-all: compile
+LIBS=_build/default/lib
+PLT=.dialyzer_plt
 
 compile:
 	rebar3 compile
@@ -8,9 +9,18 @@ compile:
 test:
 	rebar3 ct
 
+lint: $(PLT)
+	dialyzer -r $(LIBS)/reminder_bot/ebin --plt $(PLT)
+
+$(PLT):
+	dialyzer --build_plt --apps erts kernel stdlib inets ssl --output_plt $(PLT)
+	dialyzer --add_to_plt --plt $(PLT) -r $(LIBS)/lager
+	dialyzer --add_to_plt --plt $(PLT) -r $(LIBS)/jsx
+	dialyzer --add_to_plt --plt $(PLT) -r $(LIBS)/legendary_goggles
+
 run: compile
 	erl \
-		-env ERL_LIBS _build/default/lib \
+		-env ERL_LIBS $(LIBS) \
 		+K true \
 		-boot start_sasl \
 		-config config/app \
