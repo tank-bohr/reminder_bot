@@ -1,35 +1,30 @@
-%%%-------------------------------------------------------------------
-%% @doc reminder_bot top level supervisor.
-%% @end
-%%%-------------------------------------------------------------------
-
 -module(reminder_bot_sup).
 
--behaviour(supervisor).
-
-%% API
 -export([start_link/0]).
 
-%% Supervisor callbacks
+-behaviour(supervisor).
 -export([init/1]).
 
 -define(SERVER, ?MODULE).
-
-%%====================================================================
-%% API functions
-%%====================================================================
+-define(FLAGS, #{
+    strategy  => one_for_all,
+    intensity => 5,
+    period    => 10
+}).
+-define(CHILD(I, Type), #{
+    id       => I,
+    start    => {I, start_link, []},
+    restart  => permanent,
+    shutdown => 5000,
+    type     => Type,
+    modules  => [I]
+}).
 
 start_link() ->
     supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
-%%====================================================================
-%% Supervisor callbacks
-%%====================================================================
-
-%% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
 init([]) ->
-    {ok, { {one_for_all, 0, 1}, []} }.
-
-%%====================================================================
-%% Internal functions
-%%====================================================================
+    Children = [
+      ?CHILD(reminder_bot_scheduler, worker)
+    ],
+    {ok, {?FLAGS, Children} }.

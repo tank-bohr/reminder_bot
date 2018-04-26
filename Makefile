@@ -9,7 +9,7 @@ compile:
 test:
 	rebar3 ct
 
-lint: $(PLT)
+lint: compile $(PLT)
 	dialyzer -r $(LIBS)/reminder_bot/ebin --plt $(PLT)
 
 $(PLT):

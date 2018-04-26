@@ -4,7 +4,7 @@
  {<<"lager">>,{pkg,<<"lager">>,<<"3.6.1">>},0},
  {<<"legendary_goggles">>,
   {git,"https://github.com/tank-bohr/legendary_goggles.git",
-       {ref,"7b35b2cec435282d16892bd257a69ca9fba23012"}},
+       {ref,"40a55d27885dcf185af5b21289eefb62090dc7d3"}},
   0}]}.
 [
 {pkg_hash,[
