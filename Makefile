@@ -28,5 +28,6 @@ run: compile
 		+K true \
 		-boot start_sasl \
 		-config config/app \
+		-reminder_bot token '"$(TOKEN)"' \
 		-name reminder_bot \
 		-s reminder_bot

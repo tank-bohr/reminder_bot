@@ -9,12 +9,15 @@
 
 -define(REQUEST_TIMEOUT_MILLIS, 5000).
 
+-spec get_me() -> map().
 get_me() ->
     api_call("getMe").
 
+-spec get_updates() -> map().
 get_updates() ->
     api_call("getUpdates").
 
+-spec send_message(binary(), binary()) -> map().
 send_message(ChatId, Text) ->
     api_call("sendMessage", #{chat_id => ChatId, text => Text}).
 
@@ -31,15 +34,8 @@ api_call(Method, Params, BaseUrl) ->
     Result.
 
 url(Method, BaseUrl) ->
-    {ok, Token} = token(),
+    Token = reminder_bot:token(),
     binary_to_list(iolist_to_binary([BaseUrl, Token, "/", Method])).
-
-%% FIXME: Memoize ineffective `os:getenv` call
-token() ->
-    case os:getenv("TOKEN") of
-        false -> no_token;
-        Token -> {ok, Token}
-    end.
 
 request(Url, Params) ->
     RequestBody = reminder_bot_json:encode(Params),

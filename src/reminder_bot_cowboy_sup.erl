@@ -17,7 +17,7 @@ start_link() ->
 
 -spec init([]) -> {ok, pid(), map()}.
 init([]) ->
-    Port = port(),
+    Port = reminder_bot:port(),
     Dispatch = dispatch(),
     {ok, Pid} = cowboy:start_clear(reminder_bot_listener,
         [{port, Port}],
@@ -28,12 +28,6 @@ init([]) ->
 -spec terminate(term(), term()) -> ok.
 terminate(_Reason, _State) ->
     ok.
-
-port() ->
-    case os:getenv("PORT") of
-        false -> 8080;
-        Port -> Port
-    end.
 
 dispatch() ->
     cowboy_router:compile([

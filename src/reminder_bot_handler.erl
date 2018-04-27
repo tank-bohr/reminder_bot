@@ -10,10 +10,17 @@
 
 -spec init(req(), state()) -> {ok, req(), state()}.
 init(Req0, State) ->
-    Response = reminder_bot_json:encode(#{
-        result => ok
-    }),
-    Req = cowboy_req:reply(200, #{
-        <<"content-type">> => <<"application/json">>
-    }, Response, Req0),
-    {ok, Req, State}.
+    {ok, Data, Req} = read_body(Req0),
+    lager:debug(Data),
+    {ok, cowboy_req:reply(204, Req), State}.
+
+read_body(Req) ->
+    read_body(Req, <<>>).
+
+read_body(Req0, Acc) ->
+    case cowboy_req:read_body(Req0) of
+        {ok, Data, Req} ->
+            {ok, <<Acc/binary, Data/binary>>, Req};
+        {more, Data, Req} ->
+            read_body(Req, <<Acc/binary, Data/binary>>)
+    end.
