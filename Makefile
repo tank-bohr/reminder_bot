@@ -1,4 +1,4 @@
-.PHONY: all compile test run lint
+.PHONY: all compile test run lint observer
 
 LIBS=_build/default/lib
 PLT=.dialyzer_plt
@@ -18,6 +18,9 @@ $(PLT):
 	dialyzer --add_to_plt --plt $(PLT) -r $(LIBS)/lager
 	dialyzer --add_to_plt --plt $(PLT) -r $(LIBS)/jsx
 	dialyzer --add_to_plt --plt $(PLT) -r $(LIBS)/legendary_goggles
+
+observer:
+	erl -name observer -hidden -run observer
 
 run: compile
 	erl \

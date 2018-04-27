@@ -25,6 +25,7 @@ start_link() ->
 
 init([]) ->
     Children = [
-      ?CHILD(reminder_bot_scheduler, worker)
+      ?CHILD(reminder_bot_scheduler, worker),
+      ?CHILD(reminder_bot_cowboy_sup, supervisor)
     ],
     {ok, {?FLAGS, Children} }.
