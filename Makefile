@@ -14,6 +14,7 @@ lint: compile $(PLT)
 
 $(PLT):
 	dialyzer --build_plt --apps erts kernel stdlib inets ssl --output_plt $(PLT)
+	dialyzer --add_to_plt --plt $(PLT) -r $(LIBS)/cowboy
 	dialyzer --add_to_plt --plt $(PLT) -r $(LIBS)/lager
 	dialyzer --add_to_plt --plt $(PLT) -r $(LIBS)/jsx
 	dialyzer --add_to_plt --plt $(PLT) -r $(LIBS)/legendary_goggles
