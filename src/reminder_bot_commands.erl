@@ -4,6 +4,18 @@
 
 -define(DEFAULT_TIME, {10, 0}).
 
+-type string_to_parse() :: string() | binary().
+-type date()            :: calendar:date().
+-type hour()            :: 0..23.
+-type minute()          :: 0..59.
+-type time()            :: {date(), {hour(), minute()}}.
+-type action()          :: nonempty_string().
+-type response()        :: #{
+    action := action(),
+    time   := time()
+} | invalid_command.
+
+-spec parse(string_to_parse()) -> response().
 parse(Str) ->
     Match = re:run(Str,
         "remind\s+me\s+(?<A>(on|at).+?)\s+(?<B>to.+)",

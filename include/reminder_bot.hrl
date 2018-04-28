@@ -1,0 +1,5 @@
+-ifndef(TEST).
+-define(TELEGRAM_BASE_URL, "https://api.telegram.org/bot").
+-else.
+-define(TELEGRAM_BASE_URL, "http://localhost:5432/bot").
+-endif.

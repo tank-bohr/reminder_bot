@@ -1,13 +1,17 @@
 -module(reminder_bot_telegram).
--include_lib("reminder_bot_telegram.hrl").
+-include_lib("reminder_bot.hrl").
+-include_lib("eunit/include/eunit.hrl").
 
 -export([
     get_me/0,
     get_updates/0,
-    send_message/2
+    send_message/2,
+    peel_update/1
 ]).
 
 -define(REQUEST_TIMEOUT_MILLIS, 5000).
+
+-type update() :: map() | [map()].
 
 -spec get_me() -> map().
 get_me() ->
@@ -21,6 +25,22 @@ get_updates() ->
 send_message(ChatId, Text) ->
     api_call("sendMessage", #{chat_id => ChatId, text => Text}).
 
+-spec peel_update(update()) -> map().
+peel_update([Update|_]) ->
+    peel_update(Update);
+peel_update(#{
+                message := #{
+                    text := Text,
+                    from := #{
+                        id := UserId
+                    }
+                }
+            }) ->
+    #{text => Text, user_id => UserId};
+peel_update(Update) ->
+    lager:error("Wrong `Update` format: ~p", [Update]),
+    #{}.
+
 api_call(Method) ->
     api_call(Method, #{}).
 
@@ -30,6 +50,7 @@ api_call(Method, Params) ->
 api_call(Method, Params, BaseUrl) ->
     Url = url(Method, BaseUrl),
     {ok, Body} = request(Url, Params),
+    ?debugVal(Body),
     #{ok := true, result := Result} = reminder_bot_json:decode(Body),
     Result.
 
