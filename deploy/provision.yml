@@ -1,0 +1,59 @@
+---
+- hosts: all
+  become: yes
+  vars:
+    project_name: reminder_bot
+    project_dir: "{{ playbook_dir }}/.."
+    work_dir: "/srv/{{ project_name }}"
+    user: "{{ ansible_env.SUDO_USER }}"
+
+  tasks:
+    - name: packages
+      apt:
+        name: "{{item}}"
+        update_cache: yes
+      with_items:
+        - cron
+        - nginx
+        - erlang
+
+    # configure nginx
+    - name: disable defalt
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: install config
+      template:
+        dest: /etc/nginx/sites-available/{{server_name}}
+        src: reminder-bot.conf.j2
+
+    - name: enable config
+      file:
+        dest: /etc/nginx/sites-enabled/{{server_name}}
+        src: /etc/nginx/sites-available/{{server_name}}
+        state: link
+
+    # certbot
+    - name: enable stretch backports
+      apt_repository:
+        repo: deb http://ftp.debian.org/debian stretch-backports main
+        state: present
+
+    - name: install certbot
+      apt:
+        name: python-certbot-nginx
+        update_cache: yes
+        default_release: stretch-backports
+
+    - name: obtain certificate
+      shell: certbot -n --authenticator standalone --installer nginx -d {{server_name}} --pre-hook "nginx -s stop" --post-hook "nginx"
+      args:
+        creates: /etc/letsencrypt/live/{{server_name}}/fullchain.pem
+
+    - name: install certbot renew cron task
+      cron:
+        name: certbot renew
+        minute: 40
+        hour: 6
+        job: certbot renew --post-hook "systemctl reload nginx"

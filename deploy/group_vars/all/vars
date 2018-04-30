@@ -1,0 +1,4 @@
+---
+server_name: bot.glowing-engine.online
+port: 8080
+webhook_location: "{{vault_webhook_location}}"

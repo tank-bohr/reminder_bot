@@ -2,6 +2,7 @@
 
 LIBS=_build/default/lib
 PLT=.dialyzer_plt
+INVENTORY=deploy/inventory
 
 compile:
 	rebar3 compile
@@ -31,3 +32,6 @@ run: compile
 		-reminder_bot token '"$(TOKEN)"' \
 		-name reminder_bot \
 		-s reminder_bot
+
+provision: $(INVENTORY)
+	ansible-playbook -i $(INVENTORY) --ask-vault-pass deploy/provision.yml
