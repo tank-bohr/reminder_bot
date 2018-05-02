@@ -1,4 +1,6 @@
 ---
 server_name: bot.glowing-engine.online
+keep_releases: 5
 port: 8080
-webhook_location: "{{vault_webhook_location}}"
+token: "{{ vault_token }}"
+webhook_location: "{{ vault_webhook_location }}"

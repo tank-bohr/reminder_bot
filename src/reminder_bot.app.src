@@ -1,6 +1,6 @@
 {application, reminder_bot,
  [{description, "An OTP application"},
-  {vsn, "0.1.0"},
+  {vsn, "0.0.1"},
   {registered, []},
   {mod, { reminder_bot_app, []}},
   {applications,
@@ -10,7 +10,9 @@
     cowboy,
     lager,
     inets,
-    ssl
+    ssl,
+    jsx,
+    legendary_goggles
    ]},
   {env,[]},
   {modules, []},

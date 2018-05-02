@@ -1,4 +1,4 @@
-.PHONY: all compile test run lint observer
+.PHONY: all compile test run lint observer provision deploy
 
 LIBS=_build/default/lib
 PLT=.dialyzer_plt
@@ -36,3 +36,6 @@ run: compile
 
 provision: $(INVENTORY) $(VAULT_ID)
 	ansible-playbook -i $(INVENTORY) --vault-id $(VAULT_ID) deploy/provision.yml
+
+deploy: $(INVENTORY) $(VAULT_ID)
+	ansible-playbook -i $(INVENTORY) --vault-id $(VAULT_ID) deploy/deploy.yml

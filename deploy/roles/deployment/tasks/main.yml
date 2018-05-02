@@ -1,0 +1,61 @@
+---
+- set_fact:
+    this_release_path: "{{ work_dir }}/{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
+- debug: msg='New release path {{ this_release_path }}'
+
+- name: ensure working directory exists
+  file:
+    path: "{{ work_dir }}"
+    state: directory
+
+- name: ensure systemd unit installed
+  template:
+    src: systemd-unit.service.j2
+    dest: "/etc/systemd/system/{{ project_name }}.service"
+  notify:
+    - daemon reload
+
+- name: cleanup release
+  file:
+    path: "{{ build_dir }}/rel"
+    state: absent
+  become: false
+  delegate_to: 127.0.0.1
+
+- name: build
+  shell: rebar3 tar
+  args:
+    chdir: "{{ project_dir }}"
+  become: false
+  delegate_to: 127.0.0.1
+
+- name: create release directory
+  file:
+    path: "{{ this_release_path }}"
+    state: directory
+
+- name: deployment
+  unarchive:
+    dest: "{{ this_release_path }}"
+    src: "{{ build_dir }}/rel/{{ project_name }}/{{ project_name }}-0.0.1.tar.gz"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+
+- name: symlink new release
+  file:
+    src: "{{ this_release_path }}"
+    dest: "{{ work_dir }}/current"
+    state: link
+    force: yes
+    owner: "{{ user }}"
+
+- name: cleanup the old releases
+  shell: "ls -1t {{ work_dir }} | tail -n +{{ keep_releases + 1 }} | xargs rm -rf"
+  args:
+    chdir: "{{ work_dir }}"
+    group: "{{ work_dir }}"
+
+- name: Run
+  systemd:
+    name: "{{ project_name }}"
+    state: restarted

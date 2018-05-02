@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: yes
+  vars:
+    project_name: reminder_bot
+    project_dir: "{{ playbook_dir }}/.."
+    build_dir: "{{ project_dir }}/_build/default"
+    work_dir: "/srv/{{ project_name }}"
+    user: "{{ ansible_env.SUDO_USER }}"
+
+  roles:
+    - deployment
