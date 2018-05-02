@@ -1,0 +1,28 @@
+---
+- name: enable stretch backports
+  apt_repository:
+    repo: deb http://ftp.debian.org/debian stretch-backports main
+    state: present
+
+- name: install certbot
+  apt:
+    name: python-certbot-nginx
+    update_cache: yes
+    default_release: stretch-backports
+
+- name: obtain certificate
+  shell: certbot -n --authenticator standalone --installer nginx -d {{server_name}} --pre-hook "nginx -s stop" --post-hook "nginx"
+  # args:
+  #   creates: /etc/letsencrypt/live/{{server_name}}/fullchain.pem
+
+- name: install cron
+  apt:
+    name: cron
+    update_cache: yes
+
+- name: install certbot renew cron task
+  cron:
+    name: certbot renew
+    minute: 40
+    hour: 6
+    job: certbot renew --post-hook "systemctl reload nginx"

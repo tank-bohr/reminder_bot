@@ -99,7 +99,7 @@ fire_reminder_test(_Config) ->
     ok = webserver:stop(Server).
 
 url() ->
-    "http://localhost:" ++ integer_to_list(?PORT).
+    "http://localhost:" ++ integer_to_list(?PORT) ++ "/webhook".
 
 current_time() ->
     {_, {H, M, _}} = calendar:universal_time(),

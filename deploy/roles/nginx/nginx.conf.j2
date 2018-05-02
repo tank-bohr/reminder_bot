@@ -7,6 +7,7 @@ server {
     server_name  {{server_name}};
 
     location /{{webhook_location}} {
+        rewrite /{{webhook_location}} /webhook break;
         proxy_pass       http://backend;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-For $remote_addr;

@@ -31,5 +31,5 @@ terminate(_Reason, _State) ->
 
 dispatch() ->
     cowboy_router:compile([
-        {'_', [{"/", reminder_bot_handler, []}]}
+        {'_', [{"/webhook", reminder_bot_handler, []}]}
     ]).

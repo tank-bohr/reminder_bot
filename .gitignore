@@ -18,3 +18,4 @@ _build
 rebar3.crashdump
 .dialyzer_plt
 deploy/*.retry
+deploy/.vault-password

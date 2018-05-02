@@ -1,0 +1,6 @@
+---
+
+- name: restore rules
+  shell: iptables-restore
+  args:
+    stdin: "{{ lookup('file', 'rules.v4' ) }}"
