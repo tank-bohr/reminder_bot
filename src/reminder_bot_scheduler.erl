@@ -11,7 +11,8 @@
     handle_call/3,
     handle_cast/2,
     handle_info/2,
-    terminate/2
+    terminate/2,
+    code_change/3
 ]).
 
 -define(POLL_MILLIS, 60000).
@@ -79,6 +80,9 @@ handle_info(_Info, State) ->
 -spec terminate(term(), state()) -> ok.
 terminate(Reason, _State) ->
     lager:error(Reason).
+
+code_change(_OldVsn, State, _Extra) ->
+    {ok, State}.
 
 create_table() ->
     ets:new(?TAB, [
