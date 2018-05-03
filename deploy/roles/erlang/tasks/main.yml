@@ -1,0 +1,14 @@
+---
+- name: install erlang and git
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+  with_items:
+    - erlang
+    - git
+
+- name: install rebar3
+  get_url:
+    url: https://s3.amazonaws.com/rebar3/rebar3
+    dest: /usr/local/bin/rebar3
+    mode: a+x

@@ -6,6 +6,9 @@
 # localhost
 -A INPUT -i lo -j ACCEPT
 
+# Allows all incoming established
+-A INPUT -m state --state ESTABLISHED -j ACCEPT
+
 # icmp
 -A INPUT -p icmp -j ACCEPT
 -A OUTPUT -p icmp -j ACCEPT

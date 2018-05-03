@@ -1,0 +1,6 @@
+---
+project_name: reminder_bot
+work_dir: "/srv/{{ project_name }}"
+repo_dir: "{{ work_dir }}/repo"
+releases_dir: "{{ work_dir }}/releases"
+user: "{{ ansible_env.SUDO_USER }}"

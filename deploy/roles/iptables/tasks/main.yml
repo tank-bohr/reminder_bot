@@ -1,5 +1,4 @@
 ---
-
 - name: restore rules
   shell: iptables-restore
   args:
