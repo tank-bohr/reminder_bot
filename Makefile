@@ -2,8 +2,8 @@
 
 LIBS=_build/default/lib
 PLT=.dialyzer_plt
-INVENTORY=deploy/inventory
-VAULT_ID=deploy/.vault-password
+INVENTORY=ansible/inventory
+VAULT_ID=ansible/.vault-password
 
 compile:
 	rebar3 compile
@@ -35,7 +35,7 @@ run: compile
 		-s reminder_bot
 
 provision: $(INVENTORY) $(VAULT_ID)
-	ansible-playbook -i $(INVENTORY) --vault-id $(VAULT_ID) deploy/provision.yml
+	ansible-playbook -i $(INVENTORY) --vault-id $(VAULT_ID) ansible/provision.yml
 
 deploy: $(INVENTORY) $(VAULT_ID)
-	ansible-playbook -i $(INVENTORY) --vault-id $(VAULT_ID) deploy/deploy.yml
+	ansible-playbook -i $(INVENTORY) --vault-id $(VAULT_ID) ansible/deploy.yml
