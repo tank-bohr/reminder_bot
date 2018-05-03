@@ -14,20 +14,22 @@
     - "{{ work_dir }}"
     - "{{ repo_dir }}"
     - "{{ releases_dir }}"
-  become: yes
 
 - name: clone repo
   git:
     repo: https://github.com/tank-bohr/reminder_bot.git
     dest: "{{ repo_dir }}"
+  become: "{{ user }}"
 
 - name: build
   shell: rebar3 release --output-dir {{ releases_dir }}
   args:
     chdir: "{{ repo_dir }}"
+  become: "{{ user }}"
 
 - name: move release
   shell: mv {{ releases_dir }}/{{ project_name }} {{ this_release_path }}
+  become: "{{ user }}"
 
 - name: symlink new release
   file:
@@ -37,11 +39,13 @@
     force: yes
     owner: "{{ user }}"
     group: "{{ user }}"
+  become: "{{ user }}"
 
 - name: cleanup the old releases
   shell: "ls -1t {{ releases_dir }} | tail -n +{{ keep_releases + 1 }} | xargs rm -rf"
   args:
     chdir: "{{ releases_dir }}"
+  become: "{{ user }}"
 
 - name: ensure systemd unit installed
   template:

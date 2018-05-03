@@ -1,5 +1,5 @@
 ---
 - hosts: all
-  become: no
+  become: yes
   roles:
     - deployment

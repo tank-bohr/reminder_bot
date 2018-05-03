@@ -4,11 +4,11 @@ Description=Reminder bot
 [Service]
 Type=simple
 User={{ user }}
-WorkingDirectory={{ work_dir }}/current
+WorkingDirectory={{ releases_dir }}/current
 Environment="PORT={{ port }}"
 Environment="TOKEN={{ token }}"
 Environment="RELX_REPLACE_OS_VARS=true"
-ExecStart=./bin/{{ project_name }} foreground
+ExecStart={{ releases_dir }}/current/bin/{{ project_name }} foreground
 Restart=on-abort
 
 [Install]
