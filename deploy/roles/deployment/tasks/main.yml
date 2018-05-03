@@ -14,7 +14,7 @@
     - "{{ work_dir }}"
     - "{{ repo_dir }}"
     - "{{ releases_dir }}"
-    - "{{ this_release_path }}"
+  become: yes
 
 - name: clone repo
   git:
@@ -22,9 +22,12 @@
     dest: "{{ repo_dir }}"
 
 - name: build
-  shell: rebar3 release --output-dir {{ this_release_path }}
+  shell: rebar3 release --output-dir {{ releases_dir }}
   args:
     chdir: "{{ repo_dir }}"
+
+- name: move release
+  shell: mv {{ releases_dir }}/{{ project_name }} {{ this_release_path }}
 
 - name: symlink new release
   file:
