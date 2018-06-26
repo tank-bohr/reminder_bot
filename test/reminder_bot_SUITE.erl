@@ -77,26 +77,25 @@ add_reminder_test(_Config) ->
     ?assertEqual(?USER_ID, UserId).
 
 fire_reminder_test(_Config) ->
-    Server = webserver:start(),
+    {ok, _} = bookish_spork:start_server(),
+    bookish_spork:stub_request(200, #{
+        <<"Content-Type">> => <<"application/json">>
+    }, <<"{\"ok\":true,\"result\":{}}\r\n">>),
     {{Y, M, D}, {H, Min, _}} = calendar:universal_time(),
     ok = reminder_bot_scheduler:add_event(#{
         time =>  {{Y, M, D}, {H, Min}},
         action => ?ACTION,
         user_id => ?USER_ID
     }),
-    ok = receive
-        {webserver, {_Headers, Body}} ->
-            #{
-                chat_id := ChatID,
-                text := Action
-            } = reminder_bot_json:decode(Body),
-            ?assertEqual(?USER_ID, ChatID),
-            ?assertEqual(?ACTION, binary_to_list(Action)),
-            ok
-        after 5000 ->
-            timeout
-    end,
-    ok = webserver:stop(Server).
+    {ok, Request} = bookish_spork:capture_request(),
+    Body = bookish_spork_request:body(Request),
+    #{
+        chat_id := ChatID,
+        text := Action
+    } = reminder_bot_json:decode(Body),
+    ?assertEqual(?USER_ID, ChatID),
+    ?assertEqual(?ACTION, binary_to_list(Action)),
+    ok = bookish_spork:stop_server().
 
 url() ->
     "http://localhost:" ++ integer_to_list(?PORT) ++ "/webhook".

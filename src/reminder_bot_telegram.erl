@@ -1,6 +1,5 @@
 -module(reminder_bot_telegram).
 -include_lib("reminder_bot.hrl").
--include_lib("eunit/include/eunit.hrl").
 
 -export([
     get_me/0,
@@ -50,7 +49,6 @@ api_call(Method, Params) ->
 api_call(Method, Params, BaseUrl) ->
     Url = url(Method, BaseUrl),
     {ok, Body} = request(Url, Params),
-    ?debugVal(Body),
     #{ok := true, result := Result} = reminder_bot_json:decode(Body),
     Result.
 
